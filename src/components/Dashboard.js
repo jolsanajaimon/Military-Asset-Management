@@ -17,11 +17,12 @@ function StatCard({ label, value, icon, color }) {
   );
 }
 
-export default function Dashboard({ api, user }) {
+export default function Dashboard({ api }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     api.get("/dashboard").then(setData).catch(console.error);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!data) return <p style={{ color: "#888", padding: 40, textAlign: "center" }}>Loading dashboard...</p>;
@@ -36,7 +37,6 @@ export default function Dashboard({ api, user }) {
         <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#1a1a2e" }}>Mission Control</h2>
         <p style={{ margin: "4px 0 0", color: "#888", fontSize: 13 }}>Real-time asset overview across all bases</p>
       </div>
-
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         <StatCard label="Total Assets" value={stats.totalAssets} icon="📦" color="#2c3e50" />
         <StatCard label="Vehicles" value={stats.vehicles} icon="🚗" color={COLORS.vehicle} />
@@ -45,7 +45,6 @@ export default function Dashboard({ api, user }) {
         <StatCard label="Pending Transfers" value={stats.pendingTransfers} icon="🔄" color="#8e44ad" />
         <StatCard label="Purchases (30d)" value={stats.recentPurchases} icon="🛒" color="#27ae60" />
       </div>
-
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 24 }}>
         <div style={{ background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700, color: "#333", textTransform: "uppercase", letterSpacing: "0.05em" }}>Assets by Base</h3>
@@ -61,7 +60,6 @@ export default function Dashboard({ api, user }) {
             </div>
           ))}
         </div>
-
         <div style={{ background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 14, fontWeight: 700, color: "#333", textTransform: "uppercase", letterSpacing: "0.05em" }}>Assets by Category</h3>
           {assetsByCategory.map(c => (

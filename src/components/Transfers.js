@@ -8,12 +8,18 @@ export default function Transfers({ api, user }) {
   const [error, setError] = useState("");
 
   const load = () => {
-    Promise.all([api.get("/transfers"), api.get("/assets")]).then(([t, a]) => { setTransfers(t); setAssets(a); });
+    Promise.all([api.get("/transfers"), api.get("/assets")])
+      .then(([t, a]) => { setTransfers(t); setAssets(a); })
+      .catch(console.error);
   };
 
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const canAdd = ["admin", "base_commander"].includes(user.role);
+  const statusColor = { approved: "#27ae60", pending: "#f39c12", rejected: "#c0392b" };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -25,16 +31,6 @@ export default function Transfers({ api, user }) {
     } catch (err) { setError(err.message); }
   };
 
-  const statusColor = { approved: "#27ae60", pending: "#f39c12", rejected: "#c0392b" };
-
-  const input = (label, key, type = "text", extra = {}) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>{label}</label>
-      <input type={type} style={{ padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 13 }}
-        value={form[key]} onChange={e => setForm({ ...form, [key]: e.target.value })} {...extra} />
-    </div>
-  );
-
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
@@ -42,7 +38,11 @@ export default function Transfers({ api, user }) {
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#1a1a2e" }}>Transfers</h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: 13 }}>Manage asset movement between bases</p>
         </div>
-        {canAdd && <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>{showForm ? "Cancel" : "+ New Transfer"}</button>}
+        {canAdd && (
+          <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            {showForm ? "Cancel" : "+ New Transfer"}
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -58,9 +58,18 @@ export default function Transfers({ api, user }) {
                   {assets.map(a => <option key={a.id} value={a.id}>{a.name} — {a.base} ({a.quantity})</option>)}
                 </select>
               </div>
-              {input("Quantity", "quantity", "number", { min: "1", required: true })}
-              {input("From Base", "from_base", "text", { required: true })}
-              {input("To Base", "to_base", "text", { placeholder: "Destination base", required: true })}
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>Quantity</label>
+                <input type="number" style={{ padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 13 }} value={form.quantity} onChange={e => setForm({ ...form, quantity: e.target.value })} min="1" required />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>From Base</label>
+                <input style={{ padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 13 }} value={form.from_base} onChange={e => setForm({ ...form, from_base: e.target.value })} required />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>To Base</label>
+                <input style={{ padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 13 }} value={form.to_base} onChange={e => setForm({ ...form, to_base: e.target.value })} placeholder="Destination base" required />
+              </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, gridColumn: "1 / -1" }}>
                 <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>Notes</label>
                 <input style={{ padding: "9px 12px", border: "1px solid #ddd", borderRadius: 8, fontSize: 13 }} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Transfer reason" />

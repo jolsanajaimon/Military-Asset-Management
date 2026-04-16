@@ -8,10 +8,15 @@ export default function Assignments({ api, user }) {
   const [error, setError] = useState("");
 
   const load = () => {
-    Promise.all([api.get("/assignments"), api.get("/assets")]).then(([a, ast]) => { setAssignments(a); setAssets(ast); });
+    Promise.all([api.get("/assignments"), api.get("/assets")])
+      .then(([a, ast]) => { setAssignments(a); setAssets(ast); })
+      .catch(console.error);
   };
 
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -30,7 +35,9 @@ export default function Assignments({ api, user }) {
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#1a1a2e" }}>Assignments & Expenditures</h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: 13 }}>Track asset deployment and consumption</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>{showForm ? "Cancel" : "+ New Entry"}</button>
+        <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+          {showForm ? "Cancel" : "+ New Entry"}
+        </button>
       </div>
 
       {showForm && (

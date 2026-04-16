@@ -11,10 +11,15 @@ export default function Purchases({ api, user }) {
   const [error, setError] = useState("");
 
   const load = () => {
-    Promise.all([api.get("/purchases"), api.get("/assets")]).then(([p, a]) => { setPurchases(p); setAssets(a); });
+    Promise.all([api.get("/purchases"), api.get("/assets")])
+      .then(([p, a]) => { setPurchases(p); setAssets(a); })
+      .catch(console.error);
   };
 
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const canAdd = ["admin", "logistics_officer"].includes(user.role);
 
@@ -29,12 +34,6 @@ export default function Purchases({ api, user }) {
     } catch (err) { setError(err.message); }
   };
 
-  const badge = (category) => (
-    <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: COLORS[category] + "18", color: COLORS[category] }}>
-      {CATEGORY_ICONS[category]} {category}
-    </span>
-  );
-
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
@@ -42,7 +41,11 @@ export default function Purchases({ api, user }) {
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#1a1a2e" }}>Purchases</h2>
           <p style={{ margin: "4px 0 0", color: "#888", fontSize: 13 }}>Record asset acquisitions</p>
         </div>
-        {canAdd && <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>{showForm ? "Cancel" : "+ New Purchase"}</button>}
+        {canAdd && (
+          <button onClick={() => setShowForm(!showForm)} style={{ padding: "10px 20px", background: "#1a1a2e", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+            {showForm ? "Cancel" : "+ New Purchase"}
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -91,7 +94,11 @@ export default function Purchases({ api, user }) {
             {purchases.map(p => (
               <tr key={p.id} style={{ borderBottom: "1px solid #f5f5f5" }}>
                 <td style={{ padding: "13px 16px", fontSize: 13 }}><strong>{p.asset_name}</strong></td>
-                <td style={{ padding: "13px 16px", fontSize: 13 }}>{badge(p.category)}</td>
+                <td style={{ padding: "13px 16px", fontSize: 13 }}>
+                  <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: COLORS[p.category] + "18", color: COLORS[p.category] }}>
+                    {CATEGORY_ICONS[p.category]} {p.category}
+                  </span>
+                </td>
                 <td style={{ padding: "13px 16px", fontSize: 13 }}>{p.base}</td>
                 <td style={{ padding: "13px 16px", fontSize: 13, fontWeight: 700, color: "#27ae60" }}>+{p.quantity.toLocaleString()}</td>
                 <td style={{ padding: "13px 16px", fontSize: 13 }}>{p.purchased_by_name}</td>
