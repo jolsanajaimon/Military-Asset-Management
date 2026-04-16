@@ -1,6 +1,8 @@
 [build]
-  command = "npm run build"
+  command = "npm install && npm run build"
   publish = "build"
+  base = "."
 
 [build.environment]
   CI = "false"
+  REACT_APP_API_URL = "https://military-asset-management-deqc.onrender.com/api"
