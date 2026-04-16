@@ -1,70 +1,140 @@
-# Getting Started with Create React App
+# ⚔️ KristalBall — Military Asset Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web application for managing military assets across multiple bases. Built with React, Node.js, and PostgreSQL.
 
-## Available Scripts
+## 🚀 Live Demo
+- **Frontend:** https://endearing-pixie-d2c4a0.netlify.app
+- **Backend API:** https://military-asset-management-deqc.onrender.com
+- **GitHub:** https://github.com/jolsanajaimon/Military-Asset-Management
 
-In the project directory, you can run:
+## 🛠️ Tech Stack
 
-### `npm start`
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | React 18 | Component-based SPA |
+| Backend | Node.js + Express | RESTful API server |
+| Database | PostgreSQL (Render) | Cloud database |
+| Auth | JWT | Stateless authentication |
+| Password | bcryptjs | Secure password hashing |
+| Frontend Deploy | Netlify | Static site hosting |
+| Backend Deploy | Render | Node.js + DB hosting |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## ✨ Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 📊 **Dashboard** — Real-time asset stats and charts across all bases
+- 🗄️ **Asset Inventory** — Track vehicles, weapons, ammunition, equipment
+- 🛒 **Purchases** — Record asset acquisitions with audit trail
+- 🔄 **Transfers** — Move assets between bases with quantity validation
+- 📋 **Assignments & Expenditures** — Track asset deployment and consumption
+- 🔐 **RBAC** — Role-based access control with 3 permission levels
 
-### `npm test`
+## 👥 Role-Based Access Control
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Role | View Assets | Purchases | Transfers | Assignments |
+|---|---|---|---|---|
+| Administrator | All bases | ✅ | ✅ | ✅ |
+| Base Commander | Own base only | ❌ | ✅ | ✅ |
+| Logistics Officer | Own base only | ✅ | ❌ | ✅ |
 
-### `npm run build`
+## 🗂️ Project Structure
+military-asset-management/
+├── backend/
+│   ├── index.js
+│   ├── routes/
+│   │   ├── purchases.js
+│   │   ├── transfers.js
+│   │   └── assignments.js
+│   ├── models/
+│   │   ├── asset.js
+│   │   └── user.js
+│   └── middleware/
+│       └── auth.js
+└── src/
+├── components/
+│   ├── Dashboard.js
+│   ├── Purchases.js
+│   ├── Transfers.js
+│   └── Assignments.js
+├── App.js
+└── index.js
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⚙️ Setup Instructions
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
+- Node.js 18+
+- npm 9+
+- PostgreSQL database
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Backend
+```bash
+cd backend
+npm install
+node index.js
+# Server runs on http://localhost:5000
+```
 
-### `npm run eject`
+### Frontend
+```bash
+npm install
+npm start
+# App runs on http://localhost:3000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Environment Variables
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Backend (.env)**
+DATABASE_URL=your_postgresql_connection_string
+JWT_SECRET=military_secret_key_2024
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**Frontend (.env)**
+REACT_APP_API_URL=https://military-asset-management-deqc.onrender.com/api
+CI=false
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🔑 Login Credentials
 
-## Learn More
+| Username | Password | Role | Base |
+|---|---|---|---|
+| admin | admin123 | Administrator | All bases |
+| commander_alpha | pass123 | Base Commander | Alpha Base |
+| commander_bravo | pass123 | Base Commander | Bravo Base |
+| logistics1 | pass123 | Logistics Officer | Alpha Base |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📡 API Endpoints
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| POST | /api/auth/login | Public | Login and get JWT token |
+| GET | /api/dashboard | All roles | Aggregate stats |
+| GET | /api/assets | All roles | List assets |
+| GET | /api/bases | All roles | List all bases |
+| GET | /api/purchases | All roles | List purchases |
+| POST | /api/purchases | Admin, Logistics | Record purchase |
+| GET | /api/transfers | All roles | List transfers |
+| POST | /api/transfers | Admin, Commander | Initiate transfer |
+| GET | /api/assignments | All roles | List assignments |
+| POST | /api/assignments | All roles | Record assignment |
+| GET | /api/users | Admin only | List all users |
 
-### Code Splitting
+## 🗄️ Database Schema
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Table | Description |
+|---|---|
+| users | Stores user accounts with roles and base assignments |
+| assets | Tracks all military assets with quantities per base |
+| purchases | Records all asset purchase transactions |
+| transfers | Logs inter-base asset movements |
+| assignments | Tracks asset assignments and expenditures |
 
-### Analyzing the Bundle Size
+## 🔐 RBAC Implementation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+JWT tokens are issued on login containing the user's role and base. Every API request is validated by the `auth` middleware which verifies the token. The `requireRole` middleware checks if the user's role is permitted to access the endpoint. Base filtering is also applied at the database query level — non-admin users can only see data from their assigned base.
 
-### Making a Progressive Web App
+## 📄 Documentation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+See `KristalBall_Documentation.pdf` for full technical documentation including data models, RBAC explanation, API logging details, and setup instructions.
 
-### Advanced Configuration
+## 🎥 Screen Recording
+[Add your Loom recording link here]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 👤 Author
+Jolsana Jaimon — [jolsanajaimon](https://github.com/jolsanajaimon)
