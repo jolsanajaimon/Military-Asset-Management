@@ -37,6 +37,8 @@ A full-stack web application for managing military assets across multiple bases.
 | Logistics Officer | Own base only | ✅ | ❌ | ✅ |
 
 ## 🗂️ Project Structure
+
+```
 military-asset-management/
 ├── backend/
 │   ├── index.js
@@ -49,14 +51,19 @@ military-asset-management/
 │   │   └── user.js
 │   └── middleware/
 │       └── auth.js
-└── src/
-├── components/
-│   ├── Dashboard.js
-│   ├── Purchases.js
-│   ├── Transfers.js
-│   └── Assignments.js
-├── App.js
-└── index.js
+├── src/
+│   ├── components/
+│   │   ├── Dashboard.js
+│   │   ├── Purchases.js
+│   │   ├── Transfers.js
+│   │   └── Assignments.js
+│   ├── App.js
+│   └── index.js
+├── public/
+├── .env
+├── netlify.toml
+└── package.json
+```
 
 ## ⚙️ Setup Instructions
 
